@@ -1,0 +1,25 @@
+{
+  "name": "continual-learning",
+  "displayName": "Continual Learning",
+  "version": "2.0.0",
+  "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date. Dual-harness: works in both Cursor and Claude Code.",
+  "author": {
+    "name": "Sam"
+  },
+  "license": "MIT",
+  "keywords": [
+    "continual-learning",
+    "agent-memory",
+    "transcripts",
+    "hooks",
+    "incremental"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "automation",
+    "memory",
+    "transcripts"
+  ],
+  "skills": "./plugin/skills/",
+  "hooks": "./plugin/hooks/cursor-hooks.json"
+}
