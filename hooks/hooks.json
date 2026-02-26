@@ -1,0 +1,15 @@
+{
+  "description": "Continual learning stop hook — triggers incremental AGENTS.md updates",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun run ${CLAUDE_PLUGIN_ROOT}/hooks/continual-learning-stop.ts --trial"
+          }
+        ]
+      }
+    ]
+  }
+}
