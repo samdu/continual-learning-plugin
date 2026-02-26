@@ -20,6 +20,6 @@
     "memory",
     "transcripts"
   ],
-  "skills": "./skills/",
-  "hooks": "./hooks/cursor-hooks.json"
+  "skills": "./plugin/skills/",
+  "hooks": "./plugin/hooks/cursor-hooks.json"
 }

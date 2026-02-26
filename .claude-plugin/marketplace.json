@@ -9,7 +9,7 @@
     {
       "name": "continual-learning",
       "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date. Works in both Cursor and Claude Code.",
-      "source": ".",
+      "source": "./plugin",
       "category": "productivity"
     }
   ]

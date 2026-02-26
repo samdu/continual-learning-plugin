@@ -1,7 +1,0 @@
-{
-  "name": "continual-learning",
-  "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date. Dual-harness: works in both Cursor and Claude Code.",
-  "author": {
-    "name": "Sam"
-  }
-}
