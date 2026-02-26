@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "continual-learning",
+  "description": "Dual-harness continual learning plugin — keeps AGENTS.md up to date from transcripts",
+  "owner": {
+    "name": "Sam"
+  },
+  "plugins": [
+    {
+      "name": "continual-learning",
+      "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date. Works in both Cursor and Claude Code.",
+      "source": ".",
+      "category": "productivity"
+    }
+  ]
+}

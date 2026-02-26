@@ -25,11 +25,23 @@ skill, which:
 
 ### Claude Code
 
-```
-/install-plugin ~/github/continual-learning-plugin
+Claude Code installs plugins through marketplaces. This repo ships a
+`marketplace.json` so it can act as its own single-plugin marketplace.
+
+```bash
+# 1. Register the marketplace (from a local path or git URL)
+/plugin marketplace add ~/github/continual-learning-plugin
+
+# 2. Install the plugin
+/plugin install continual-learning@continual-learning
 ```
 
-Both commands can point to the same directory (or a git repo URL, once pushed).
+Once pushed to a GitHub repo, teammates can use the `owner/repo` shorthand:
+
+```bash
+/plugin marketplace add your-org/continual-learning-plugin
+/plugin install continual-learning@continual-learning
+```
 
 ## Trigger cadence
 
