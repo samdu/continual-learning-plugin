@@ -1,5 +1,6 @@
 /// <reference types="bun-types-no-globals/lib/index.d.ts" />
 
+import { execSync } from "node:child_process";
 import {
   existsSync,
   mkdirSync,
@@ -19,9 +20,34 @@ const HARNESS_STATE_DIR = IS_CLAUDE_CODE
   ? ".claude/hooks/state"
   : ".cursor/hooks/state";
 
-const STATE_PATH = resolve(`${HARNESS_STATE_DIR}/continual-learning.json`);
+// ---------------------------------------------------------------------------
+// Git worktree resolution — share state across worktrees of the same repo
+// ---------------------------------------------------------------------------
+
+function getMainWorktreeRoot(): string | null {
+  try {
+    const gitCommonDir = execSync("git rev-parse --git-common-dir", {
+      encoding: "utf-8",
+    }).trim();
+    const abs = resolve(gitCommonDir);
+    return abs.endsWith("/.git") ? dirname(abs) : null;
+  } catch {
+    return null;
+  }
+}
+
+const MAIN_WORKTREE_ROOT = getMainWorktreeRoot();
+const STATE_BASE = MAIN_WORKTREE_ROOT ?? process.cwd();
+
+const STATE_PATH = resolve(
+  STATE_BASE,
+  HARNESS_STATE_DIR,
+  "continual-learning.json"
+);
 const INCREMENTAL_INDEX_PATH = resolve(
-  `${HARNESS_STATE_DIR}/continual-learning-index.json`
+  STATE_BASE,
+  HARNESS_STATE_DIR,
+  "continual-learning-index.json"
 );
 
 // ---------------------------------------------------------------------------
@@ -35,10 +61,16 @@ const TRIAL_DEFAULT_MIN_MINUTES = 15;
 const TRIAL_DEFAULT_DURATION_MINUTES = 24 * 60;
 
 // ---------------------------------------------------------------------------
+// Helper script path (for committing AGENTS.md to the continual-learning branch)
+// ---------------------------------------------------------------------------
+
+const SCRIPT_PATH = resolve(import.meta.dir, "../scripts/propose-agents-update.ts");
+
+// ---------------------------------------------------------------------------
 // Followup message — sent to the agent when learning triggers
 // ---------------------------------------------------------------------------
 
-const FOLLOWUP_MESSAGE = `Run the \`continual-learning\` skill now. First read existing \`AGENTS.md\` and update existing entries in place (do not only append). Use incremental transcript processing with index file \`${INCREMENTAL_INDEX_PATH}\`: only read transcripts not in the index or transcripts whose mtime is newer than indexed mtime (re-read changed transcripts). After processing, write back the updated index mtimes and remove entries for deleted transcripts. Update \`AGENTS.md\` only for high-signal, repeated user-correction patterns or durable workspace facts. Exclude one-off/transient details and secrets. Keep each learned section to at most 12 bullets. Write plain bullet points only, with no evidence/confidence tags or other metadata annotations. If no meaningful updates exist, respond exactly: No high-signal memory updates.`;
+const FOLLOWUP_MESSAGE = `Run the \`continual-learning\` skill now. Read current AGENTS.md from git: try \`git show origin/continual-learning:AGENTS.md\`, falling back to \`git show origin/main:AGENTS.md\` (detect default branch via \`git symbolic-ref refs/remotes/origin/HEAD\` if needed). If no remote, read from filesystem. Scan transcripts from **all git worktrees** — run \`git worktree list --porcelain\` to discover sibling worktree paths, derive transcript slugs for each. Use incremental transcript processing with index file \`${INCREMENTAL_INDEX_PATH}\`: only read transcripts not in the index or whose mtime is newer than indexed. After processing, write back index mtimes and remove entries for deleted transcripts. Update AGENTS.md only for high-signal, repeated user-correction patterns or durable workspace facts. Exclude one-off/transient details and secrets. Keep each section to at most 12 bullets. Plain bullet points only, no metadata. If no meaningful updates, respond exactly: No high-signal memory updates. Otherwise, write the complete proposed AGENTS.md to a temp file, then run: \`bun run ${SCRIPT_PATH} <tmpfile>\` to commit it to the \`continual-learning\` branch. The script handles push conflicts and falls back to direct write if there's no remote.`;
 
 // ---------------------------------------------------------------------------
 // Types
